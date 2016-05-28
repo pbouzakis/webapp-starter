@@ -4,6 +4,7 @@ Assumes you'd like to build your app using `gulp`, `npm`, and `browserify`.
 
 ## Sooooo... what do I do?
 
+- git clone this project :) Assuming you did that already.
 - `npm run project -- name NAME_OF_YOUR_PROJECT`
 - `cd` into that directory. (Directory is created and files from starter are copied into it.)
 - Once inside the project, `npm install`

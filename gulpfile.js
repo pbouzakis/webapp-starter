@@ -36,8 +36,10 @@ gulp.task('project', function () {
     var name = args.name;
     if (!name) throw new Error('A name for the project must be specified!');
 
-    gulp.src(['./lib/*', './styles/*', './gulpfile.js', './package.json'], { base: './' })
-        .pipe(gulp.dest(name));
+    gulp.src(
+        ['./lib/*', './styles/*', './gulpfile.js', './*.html', './package.json'],
+        { base: './' })
+            .pipe(gulp.dest(name));
 });
 
 // main build task
