@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var chalk = require('chalk');
+var args = require('yargs').argv;
 var sass = require('gulp-sass');
 var util = require('gulp-util');
 var plumber = require('gulp-plumber');
@@ -30,6 +31,14 @@ var src = {
 
 // default task is to run build
 gulp.task('default', ['build']);
+
+gulp.task('project', function () {
+    var name = args.name;
+    if (!name) throw new Error('A name for the project must be specified!');
+
+    gulp.src(['./lib/*', './styles/*', './gulpfile.js', './package.json'], { base: './' })
+        .pipe(gulp.dest(name));
+});
 
 // main build task
 gulp.task('build', ['html', 'sass', 'images', 'scripts']);

@@ -4,8 +4,9 @@ Assumes you'd like to build your app using `gulp`, `npm`, and `browserify`.
 
 ## Sooooo... what do I do?
 
-- Copy these files into your own project directory.
-- `npm install`
+- `npm run project -- name NAME_OF_YOUR_PROJECT`
+- `cd` into that directory. (Directory is created and files from starter are copied into it.)
+- Once inside the project, `npm install`
 - `npm start`
 - If app launches in a browser you are good to go!
 

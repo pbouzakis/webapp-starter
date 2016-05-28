@@ -1,7 +1,8 @@
 {
   "name": "my-project",
   "scripts": {
-    "start": "gulp serve"
+    "start": "gulp serve",
+    "project": "gulp project"
   },
   "devDependencies": {
     "babel": "^6.5.2",
@@ -19,7 +20,8 @@
     "gulp-util": "^3.0.7",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "yargs": "^4.7.1"
   },
   "dependencies": {}
 }
