@@ -26,6 +26,9 @@ build/Release
 # Dependency directory
 node_modules
 
+# Gulp build artifacts
+build
+
 # Optional npm cache directory
 .npm
 
