@@ -104,7 +104,7 @@ gulp.task('scripts', function () {
     var bro = browserify({
         entries: './' + ENTRY_PATH,
         debug: true,
-        transform: [babelify]
+        transform: [babelify.configure({ presets: ['es2015'] })]
     });
 
     // our javascript bundler
