@@ -14,6 +14,7 @@ const source_maps = require('gulp-sourcemaps');
 const watchify = require('watchify');
 const uglify = require('gulp-uglify');
 const browser_sync = require('browser-sync').create();
+const history_api_fb = require('connect-history-api-fallback');
 
 // paths
 const ENTRY_PATH = 'lib/main.js';
@@ -100,9 +101,10 @@ gulp.task('scripts', () => {
     const bro = browserify({
         entries: './' + ENTRY_PATH,
         debug: true,
-        transform: [
-            babelify.configure({presets: ['es2015']})
-        ]
+        transform: [babelify.configure({
+            presets: ['es2015'],
+            plugins: ['transform-react-jsx']
+        })]
     });
 
     // Check if we should run through watchify
@@ -175,8 +177,12 @@ gulp.task('scripts', () => {
 // called to serve the files on localhost
 gulp.task('serve', ['watch'], () => {
     browser_sync.init({
-        server: DEST_PATH,
+        server: {
+            baseDir: DEST_PATH,
+            middleware: [history_api_fb()]
+        },
         host: 'project.localtest.me',
         open: 'external'
     });
 });
+
