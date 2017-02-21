@@ -1,29 +1,29 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var chalk = require('chalk');
-var args = require('yargs').argv;
-var sass = require('gulp-sass');
-var util = require('gulp-util');
-var plumber = require('gulp-plumber');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var rename = require('gulp-rename');
-var source_maps = require('gulp-sourcemaps');
-var watchify = require('watchify');
-var uglify = require('gulp-uglify');
-var browser_sync = require('browser-sync').create()
+const gulp = require('gulp');
+const concat = require('gulp-concat');
+const chalk = require('chalk');
+const args = require('yargs').argv;
+const sass = require('gulp-sass');
+const util = require('gulp-util');
+const plumber = require('gulp-plumber');
+const browserify = require('browserify');
+const babelify = require('babelify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const rename = require('gulp-rename');
+const source_maps = require('gulp-sourcemaps');
+const watchify = require('watchify');
+const uglify = require('gulp-uglify');
+const browser_sync = require('browser-sync').create();
 
 // paths
-var ENTRY_PATH = 'lib/main.js'
-var DEST_PATH = 'build';
+const ENTRY_PATH = 'lib/main.js';
+const DEST_PATH = 'build';
 
 // if we are watching
-var watch = false;
+let watch = false;
 
 // our source files
-var src = {
+const src = {
     web_pages: './*.html',
     sass: './styles/*.scss',
     images: './images/*.*'
@@ -32,8 +32,8 @@ var src = {
 // default task is to run build
 gulp.task('default', ['build']);
 
-gulp.task('project', function () {
-    var name = args.name;
+gulp.task('project', () => {
+    const name = args.name;
     if (!name) throw new Error('A name for the project must be specified!');
 
     gulp.src(
@@ -46,28 +46,28 @@ gulp.task('project', function () {
 gulp.task('build', ['html', 'sass', 'images', 'scripts']);
 
 // called before watch starts
-gulp.task('pre-watch', function () {
+gulp.task('pre-watch', () => {
     watch = true;
 });
 
 // our watch task to watch files and perform other tasks
-gulp.task('watch', ['pre-watch', 'build'], function () {
-    gulp.watch(src.web_pages, ['html']).on('change', function () {
-        browser_sync.reload();
-    });
+gulp.task('watch', ['pre-watch', 'build'], () => {
+    gulp.watch(src.web_pages, ['html'])
+        .on('change', () => {
+            browser_sync.reload();
+        });
     gulp.watch(src.sass, ['sass']);
     gulp.watch(src.images, ['images']);
 });
 
 // called to move any HTML documents into the destination folder
-gulp.task('html', function () {
-    return gulp.src(src.web_pages)
-        .pipe(gulp.dest(DEST_PATH));
-});
+gulp.task('html', () =>
+    gulp.src(src.web_pages)
+        .pipe(gulp.dest(DEST_PATH)));
 
 // build and move SCSS files to destination folder
-gulp.task('sass', function () {
-    return gulp.src(src.sass)
+gulp.task('sass', () =>
+    gulp.src(src.sass)
         .pipe(source_maps.init())
         .pipe(plumber(function (error) {
             util.beep();
@@ -89,35 +89,31 @@ gulp.task('sass', function () {
         .pipe(source_maps.write())
         .pipe(concat('app.css'))
         .pipe(gulp.dest(DEST_PATH + '/css'))
-        .pipe(browser_sync.stream());
-});
+        .pipe(browser_sync.stream()));
 
 // called to move any images over
-gulp.task('images', function () {
-    return gulp.src(src.images)
-        .pipe(gulp.dest(DEST_PATH + '/images'));
-});
+gulp.task('images', () =>
+    gulp.src(src.images)
+        .pipe(gulp.dest(DEST_PATH + '/images')));
 
-// called to proccess your javascript files
-gulp.task('scripts', function () {
-    // our browserify instance
-    var bro = browserify({
+gulp.task('scripts', () => {
+    const bro = browserify({
         entries: './' + ENTRY_PATH,
         debug: true,
-        transform: [babelify.configure({ presets: ['es2015'] })]
+        transform: [
+            babelify.configure({presets: ['es2015']})
+        ]
     });
 
-    // our javascript bundler
-    var bundler = watch ? watchify(bro) : bro;
+    // Check if we should run through watchify
+    let bundler = watch ? watchify(bro) : bro;
 
-    // when the bundler updates
-    bundler.on('update', function () {
-        // call our rebundler again
+    bundler.on('update', () => {
         rebundle(bundler);
     });
 
     // our rebundle function
-    function rebundle(bundler) {
+    const rebundle = bundler => {
         util.log('Browserify is bundling...');
         // tell browserify we are compiling
         browser_sync.notify('Browserify is bundling...');
@@ -125,7 +121,7 @@ gulp.task('scripts', function () {
         bundler.error = false;
         // send our bundler bundle back
         return bundler.bundle()
-            .on('error', function (error) {
+            .on('error', error => {
                 // set bundler error to true to check for later
                 bundler.error = true;
                 // beep and give us the error
@@ -153,7 +149,7 @@ gulp.task('scripts', function () {
             .pipe(source_maps.init({ loadMaps: true }))
             .pipe(source_maps.write('./'))
             .pipe(gulp.dest(DEST_PATH + '/js'))
-            .on('end', function () {
+            .on('end', () => {
                 // don't do anything if we have an error
                 if (!bundler.error) {
                     // we are done bundling
@@ -170,14 +166,14 @@ gulp.task('scripts', function () {
                     browser_sync.reload();
                 }
             });
-    }
+    };
 
     // call the rebundle to bundle the app
     return rebundle(bundler);
 });
 
 // called to serve the files on localhost
-gulp.task('serve', ['watch'], function () {
+gulp.task('serve', ['watch'], () => {
     browser_sync.init({
         server: DEST_PATH,
         host: 'project.localtest.me',
